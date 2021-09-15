@@ -1,0 +1,22 @@
+{
+  "name": "webpack-double-import-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "clean": "rm dist/bundle.js",
+    "build-dev": "webpack --mode development",
+    "build-prod": "webpack --mode production",
+    "build-prod:batch": "./build-prod"
+  },
+  "dependencies": {
+    "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "chalk": "^4.1.2",
+    "webpack-cli": "^4.7.0"
+  }
+}

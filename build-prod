@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+/* eslint-disable no-console */
+
+const webpack = require("webpack");
+const chalk = require("chalk");
+
+const webpackTestConfig = require("./webpack.config");
+
+const configs = [webpackTestConfig];
+
+const compilers = configs.map((config) => ({
+  names: Object.keys(config.entry),
+  compiler: webpack(config),
+}));
+
+const compile = (compiler, names) =>
+  new Promise((resolve) => {
+    compiler.run((err, stats) => {
+      console.log(err, stats);
+      if (err) {
+        console.error(err);
+        process.exit(1);
+      }
+      if (stats.hasErrors() || stats.hasWarnings()) {
+        console.log(
+          stats.toString({
+            chunks: false, // Makes the build much quieter
+            colors: true, // Shows colors in the console
+          })
+        );
+        process.exit(1);
+      }
+      resolve();
+      names.forEach((name) => {
+        console.log(chalk.green(`\u2714 ${name}`));
+      });
+    });
+  });
+
+const compilations = compilers.map(
+  ({ compiler, names }) =>
+    () =>
+      compile(compiler, names)
+);
+
+(async () => {
+  console.log(chalk.blue("Compiling Instabase apps..."));
+  for (const compilation of compilations) await compilation(); // eslint-disable-line
+  console.log(chalk.blue("Done"));
+})();
